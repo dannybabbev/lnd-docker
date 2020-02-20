@@ -9,5 +9,5 @@ docker build --build-arg LND_VERSION=v0.9.0-beta .
 
 Example with tag:
 ```
-docker build --build-arg LND_VERSION=v0.8.2-beta-rc1 . -t lnd:v0.9.0-beta
+docker build --build-arg LND_VERSION=v0.9.0-beta . -t lnd:v0.9.0-beta
 ```
