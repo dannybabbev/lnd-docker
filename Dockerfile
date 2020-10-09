@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:1.15-alpine as builder
 
 ARG LND_VERSION
 
@@ -15,7 +15,11 @@ RUN apk add --no-cache --update alpine-sdk \
 &&  cd /go/src/github.com/lightningnetwork/lnd \
 &&  git checkout $LND_VERSION \
 &&  make \
-&&  make install tags="signrpc walletrpc chainrpc invoicesrpc routerrpc"
+&&  make install tags="signrpc walletrpc chainrpc invoicesrpc routerrpc" \
+&&  cd ~ \
+&&  go get -d github.com/LN-Zap/lndconnect \
+&&  cd /go/src/github.com/LN-Zap/lndconnect \
+&&  make
 
 # Start a new, final image to reduce size.
 FROM alpine as final
@@ -23,6 +27,7 @@ FROM alpine as final
 # Copy the binaries and entrypoint from the builder image.
 COPY --from=builder /go/bin/lncli /bin/
 COPY --from=builder /go/bin/lnd /bin/
+COPY --from=builder /go/bin/lndconnect /bin/
 
 # Add bash.
 RUN apk add --no-cache bash
